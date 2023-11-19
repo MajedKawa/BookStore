@@ -13,4 +13,4 @@
 |
 */
 
-$router->get('/', 'FrontendController@welcome');
+$router->get('/front', 'FrontendController@welcome');

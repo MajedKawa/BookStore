@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Http;
 
 class OrdersController extends Controller
 {
-    public function purchase($itemNumber)
+    public function purchase($id)
     {
         // Validate and process the purchase
-        $purchaseResult = $this->processPurchase($itemNumber);
+        $purchaseResult = $this->processPurchase($id);
 
         if ($purchaseResult['success']) {
             return response()->json(['message' => 'Purchase successful']);
@@ -19,10 +19,10 @@ class OrdersController extends Controller
         }
     }
 
-    private function processPurchase($itemNumber)
+    private function processPurchase($id)
     {
         // Query the catalog microservice to check item availability
-        $catalogResponse = Http::get('http://catalog-microservice:8000/catalog/' . $itemNumber);
+        $catalogResponse = Http::get('http://127.0.0.1:8000/catalog/' . $id);
 
         if ($catalogResponse->successful()) {
             $catalogData = $catalogResponse->json();
@@ -31,7 +31,7 @@ class OrdersController extends Controller
             if ($catalogData['quantity'] > 0) {
                 // Perform the purchase
                 // decrement the in-stock count in the catalog microservice
-                $this->updateCatalog($itemNumber, $catalogData['quantity'] - 1);
+                $this->updateCatalog($id, $catalogData['quantity'] - 1);
 
                 return ['success' => true];
             } else {
@@ -42,11 +42,11 @@ class OrdersController extends Controller
         }
     }
 
-    private function updateCatalog($itemNumber, $newQuantity)
+    private function updateCatalog($id, $quantity)
     {
         // Update the catalog microservice with the new quantity
-        $updateResponse = Http::put('http://catalog-microservice:8000/catalog/' . $itemNumber, [
-            'quantity' => $newQuantity,
+        $updateResponse = Http::put('http://127.0.0.1:8000/catalog/' . $id, [
+            'quantity' => $quantity,
         ]);
 
         // Handle the response as needed

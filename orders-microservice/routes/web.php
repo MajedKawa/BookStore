@@ -13,5 +13,5 @@
 |
 */
 
-$router->post('/orders/purchase/{item_number}', 'OrdersController@purchase');
+$router->post('/orders/purchase/{id}', 'OrdersController@purchase');
 
