@@ -13,6 +13,5 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->post('/orders/purchase/{item_number}', 'OrdersController@purchase');
+
