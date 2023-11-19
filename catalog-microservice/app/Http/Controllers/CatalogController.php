@@ -7,7 +7,7 @@ class CatalogController extends Controller
     public function index()
     {
         $data = [];
-        if (($handle = fopen(storage_path('\app\catalog.csv'), 'r')) !== false) {
+        if (($handle = fopen(storage_path('app/catalog.csv'), 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 $data[] = [
                     'id' => $row[0],
@@ -33,7 +33,7 @@ class CatalogController extends Controller
         // Initialize a variable to store the found book
         $foundBook = null;
 
-        if (($handle = fopen(storage_path('\app\catalog.csv'), 'r')) !== false) {
+        if (($handle = fopen(storage_path('app/catalog.csv'), 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 if ($row[0] == $id) {
                     $foundBook = [
@@ -64,7 +64,7 @@ class CatalogController extends Controller
         $data = request()->all();
 
         $rows = [];
-        if (($handle = fopen(storage_path('\app\catalog.csv'), 'r')) !== false) {
+        if (($handle = fopen(storage_path('app/catalog.csv'), 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 if ($row[0] == $id) {
                     $row = [$id, $data['title'], $data['quantity'], $data['price'], $data['topic']];
