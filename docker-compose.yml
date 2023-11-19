@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend-microservice
+    ports:
+      - "80:80"
+
+  catalog:
+    build:
+      context: ./catalog-microservice
+    ports:
+      - "8000:8000"
+
+  orders:
+    build:
+      context: ./orders-microservice
+    ports:
+      - "8001:8001"
