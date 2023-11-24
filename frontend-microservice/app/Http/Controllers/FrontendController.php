@@ -35,7 +35,7 @@ class FrontendController extends Controller
         $response = Http::post('http://192.168.1.71:8001/orders/purchase/' . $id);
 
         if ($response->successful()) {
-            return response()->json(['message' => 'Purchase successful'], 200);
+            return response()->json(['message' => 'Purchase successful! You bought the book with this id: ' . $id]);
         } else {
             return response()->json(['error' => 'Failed to process purchase'], 500);
         }

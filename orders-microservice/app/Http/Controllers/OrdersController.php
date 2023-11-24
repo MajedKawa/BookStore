@@ -13,7 +13,7 @@ class OrdersController extends Controller
         $purchaseResult = $this->processPurchase($id);
 
         if ($purchaseResult['success']) {
-            return response()->json(['message' => 'Purchase successful']);
+            return response()->json(['message' => 'Purchase successful! You bought a book with this id: ' . $id]);
         } else {
             return response()->json(['error' => $purchaseResult['message']], 400);
         }
