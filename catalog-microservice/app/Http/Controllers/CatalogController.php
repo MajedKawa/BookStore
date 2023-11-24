@@ -57,33 +57,98 @@ class CatalogController extends Controller
             return response()->json(['error' => 'Failed to open the catalog file.'], 500);
         }
     }
-
-
-    public function update($id)
+    public function search($topic)
     {
-        $data = request()->all();
+        $matchingBooks = null;
 
-        $rows = [];
+        $topic = $this->getDecodedTopic($topic);
+
+        $topic = trim($topic);
+
         if (($handle = fopen(storage_path('app/catalog.csv'), 'r')) !== false) {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-                if ($row[0] == $id) {
-                    $row = [$id, $data['title'], $data['quantity'], $data['price'], $data['topic']];
+                if (trim($row[4]) == $topic) {
+                    $matchingBooks[] = [
+                        'id' => $row[0],
+                        'title' => $row[1],
+                        'quantity' => $row[2],
+                        'price' => $row[3],
+//                        'topic' => $row[4],
+                    ];
                 }
-                $rows[] = $row;
             }
-            fclose($handle);
-        }else {
-            return response()->json(['error' => 'Failed to open the catalog file.'], 500);
+        }
+        fclose($handle);
+
+        if(!empty($matchingBooks)) {
+            // If matching books are found, return their information
+            return response()->json(['Here are the matching books' => $matchingBooks], 200);
+
+        } else {
+            // If no matching books are found, return a message
+            return response()->json(['message' => 'No books found with the specified topic.'], 404);
         }
 
-        if (($handle = fopen(storage_path('catalog.csv'), 'w')) !== false) {
-            foreach ($rows as $row) {
+    }
+
+    public function update($id) {
+
+        $rows = [];
+
+        // Open CSV for reading
+        if(($handle = fopen(storage_path('app/catalog.csv'), 'r')) !== false) {
+
+            // Read rows
+            while(($row = fgetcsv($handle)) !== false) {
+
+                // Check if this is the item being updated
+                if($row[0] == $id) {
+
+                    // Get existing quantity
+                    $quantity = $row[2];
+
+                    // Decrement quantity
+                    $quantity--;
+
+                    // Update row with decremented quantity
+                    $row[2] = $quantity;
+
+                }
+
+                // Add row to output array
+                $rows[] = $row;
+
+            }
+
+            // Close file
+            fclose($handle);
+
+        } else {
+
+            return response()->json(['error' => 'Failed to open file'], 500);
+
+        }
+
+        // Open CSV for writing
+        if(($handle = fopen(storage_path('app/catalog.csv'), 'w')) !== false) {
+
+            // Write updated rows
+            foreach($rows as $row) {
                 fputcsv($handle, $row);
             }
+
+            // Close file
             fclose($handle);
+
         }
 
-        return response()->json(['message' => 'Catalog item updated']);
+        return response()->json(['message' => 'Quantity decremented']);
+
+    }
+
+    private function getDecodedTopic($topic)
+    {
+        return urldecode($topic);
     }
 
 }

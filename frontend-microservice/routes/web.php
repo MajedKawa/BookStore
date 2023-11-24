@@ -13,4 +13,8 @@
 |
 */
 
-$router->get('/front', 'FrontendController@welcome');
+$router->get('/search/{topic}', 'FrontendController@search');
+
+$router->get('/info/{id}', 'FrontendController@info');
+
+$router->get('/purchase/{id}', 'FrontendController@purchase');

@@ -22,16 +22,17 @@ class OrdersController extends Controller
     private function processPurchase($id)
     {
         // Query the catalog microservice to check item availability
-        $catalogResponse = Http::get('http://127.0.0.1:8000/catalog/' . $id);
+        $catalogResponse = Http::get('http://192.168.1.71:8000/catalog/' . $id);
 
         if ($catalogResponse->successful()) {
             $catalogData = $catalogResponse->json();
+            $quantity = $catalogData['book']['quantity'];
 
             // Check if the item is in stock
-            if ($catalogData['quantity'] > 0) {
+            if ($quantity > 0) {
                 // Perform the purchase
                 // decrement the in-stock count in the catalog microservice
-                $this->updateCatalog($id, $catalogData['quantity'] - 1);
+                $this->updateCatalog($id, $quantity - 1);
 
                 return ['success' => true];
             } else {
@@ -45,7 +46,7 @@ class OrdersController extends Controller
     private function updateCatalog($id, $quantity)
     {
         // Update the catalog microservice with the new quantity
-        $updateResponse = Http::put('http://127.0.0.1:8000/catalog/' . $id, [
+        $updateResponse = Http::put('http://192.168.1.71:8000/catalog/' . $id, [
             'quantity' => $quantity,
         ]);
 

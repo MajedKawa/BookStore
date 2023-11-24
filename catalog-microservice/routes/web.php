@@ -15,6 +15,6 @@
 
 $router->get('/catalog', 'CatalogController@index'); // To list all books
 $router->get('/catalog/{id}', 'CatalogController@show'); // To view a specific book
+$router->get('/catalog/search/{topic}', 'CatalogController@search'); // To search the books based on the topic
 $router->put('/catalog/{id}', 'CatalogController@update'); // To update a book
-
 
